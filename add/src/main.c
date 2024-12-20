@@ -20,7 +20,7 @@ int main(){
 		uint8_t wdata = 0;
 		int ret = nodeSystemRead(in_1,rdata,0);
 		ret += nodeSystemRead(in_2,rdata+1,0);
-		if(ret >= 0){
+		if(ret > 0){
 			wdata = rdata[0] + rdata[1] + 1;
 		    nodeSystemWrite(out,&wdata,0);
 		}
