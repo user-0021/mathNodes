@@ -38,7 +38,6 @@ const uint32_t default_freq = 100;
 	typedef double node_in_unit;
 #endif
 
-
 #ifdef NODE_OUT_INT8
 	#define NODE_OUT_UNIT NODE_INT_8
 	typedef int8_t node_out_unit;
