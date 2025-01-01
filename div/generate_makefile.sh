@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #check argment count
-if [[ $# < 3 ]]; then
+if [[ $# < 2 ]]; then
 	echo "too few argment"
-	echo "format is <input unit> <output unit> <input count>"
+	echo "format is <input unit> <output unit>"
 	exit 1
-elif [[ $# > 3 ]]; then
+elif [[ $# > 2 ]]; then
 	echo "too many argment"
-	echo "format is <input unit> <output unit> <input count>"
+	echo "format is <input unit> <output unit>"
 	exit 1
 fi
 
@@ -54,20 +54,6 @@ if [[ $isMatching == false ]]; then
 	exit 1
 fi
 
-## Third Argment
-isMatching=false
-#check third argment(input count)
-if [[ "$3" =~ ^[0-9]+$ ]]; then
-  isMatching=true
-fi
-
-#judgement
-if [[ $isMatching == false ]]; then
-	echo "third argment is invalid value."
-	echo "third argment is input counts allow only number."
-	exit 1
-fi
-
 ##generate
 #check dir
 if [ -d ./obj ]; then
@@ -88,9 +74,9 @@ echo -e \
 "	gcc -o obj/nodeSystem.o ../nodeSystem/nodeSystem.c -I include -I ../nodeSystem -c\n"\
 "\n"\
 "out: obj/main.o obj/nodeSystem.o\n"\
-"	gcc -o add-input-${1}_output-${2}_${3}input obj/main.o obj/nodeSystem.o\n"\
+"	gcc -o div-input-${1}_output-${2} obj/main.o obj/nodeSystem.o\n"\
 "\n"\
 "all: clean out\n"\
 "\n"\
 "clean:\n"\
-"	\$(RM) add-input-${1}_output-${2}_${3}input obj/main.o obj/nodeSystem.o\n" > Makefile
+"	\$(RM) div-input-${1}_output-${2} obj/main.o obj/nodeSystem.o\n" > Makefile

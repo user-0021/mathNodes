@@ -88,9 +88,9 @@ echo -e \
 "	gcc -o obj/nodeSystem.o ../nodeSystem/nodeSystem.c -I include -I ../nodeSystem -c\n"\
 "\n"\
 "out: obj/main.o obj/nodeSystem.o\n"\
-"	gcc -o add-input-${1}_output-${2}_${3}input obj/main.o obj/nodeSystem.o\n"\
+"	gcc -o sub-input-${1}_output-${2}_${3}input obj/main.o obj/nodeSystem.o\n"\
 "\n"\
 "all: clean out\n"\
 "\n"\
 "clean:\n"\
-"	\$(RM) add-input-${1}_output-${2}_${3}input obj/main.o obj/nodeSystem.o\n" > Makefile
+"	\$(RM) sub-input-${1}_output-${2}_${3}input obj/main.o obj/nodeSystem.o\n" > Makefile
