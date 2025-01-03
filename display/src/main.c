@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 const uint32_t default_freq = 100;
@@ -41,6 +42,7 @@ const uint32_t default_freq = 100;
 
 int main(){
 	//add pipe
+	int freq = nodeSystemAddPipe("Freq",NODE_CONST,NODE_UINT_32,1,&default_freq);
 	int xAxsis = nodeSystemAddPipe("xAxsis",NODE_IN,NODE_IN_UNIT,1,NULL);
 	int* inputPipes = malloc(INPUT_COUNT*sizeof(int));
 	int i;
@@ -60,9 +62,44 @@ int main(){
 	//timer
 	uint32_t hz;
 	struct timespec req = {};
-	
+
+	char line[4096];
+	strcpy(line,"xAxsis");
+	for(i = 0;i < INPUT_COUNT;i++){
+		char numString[100];
+		sprintf(numString,",yAxsis-%d",i+1);
+		strcat(line,numString);
+	}
+	nodeSystemDebugLog(line);
 
 	while(!nodeSystemLoop()){
-		sleep(3);
+
+		//read xAxsis
+		if(nodeSystemRead(xAxsis,&rdata,0) == 1){
+			//if xAxsis updated
+			sprintf(line,"%lf",(double)rdata);
+			for(i = 0;i < INPUT_COUNT;i++){
+				char numString[100];
+				if(nodeSystemRead(xAxsis,&rdata,0) < 0){
+					rdata = 0;
+				}
+				sprintf(numString,",%lf",(double)rdata);
+				strcat(line,numString);
+			}
+			nodeSystemDebugLog(line);
+		}
+
+		//update freq
+		int ret = nodeSystemRead(freq,&hz,0);
+		if(ret == 1){
+			if(hz == 0)
+				hz = default_freq;
+
+			req.tv_nsec = 1000 * 1000 * 1000 / hz;
+			req.tv_sec = req.tv_nsec/(1000*1000*1000);
+			req.tv_nsec = req.tv_nsec % (1000*1000*1000);
+		}
+
+		nanosleep(&req,NULL);
 	}
 }

@@ -4,6 +4,7 @@ chmod 0777 add/generate_makefile.sh
 chmod 0777 sub/generate_makefile.sh
 chmod 0777 mul/generate_makefile.sh
 chmod 0777 div/generate_makefile.sh
+chmod 0777 display/generate_makefile.sh
 
 #unit array
 unitArry=("INT8" "INT16" "INT32" "INT64" "UINT8" "UINT16" "UINT32" "UINT64" "FLOAT" "DOUBLE")
@@ -56,6 +57,19 @@ cd div
 for u in ${unitArry[@]}; do
 	./generate_makefile.sh $u $u
 	make
+done
+
+cd ../
+
+##generate display nodes
+
+cd display
+
+for u in ${unitArry[@]}; do
+	for i in ${numArry[@]}; do
+		./generate_makefile.sh $u $i
+		make
+	done
 done
 
 cd ../

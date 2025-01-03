@@ -68,15 +68,15 @@ echo -e \
 "\n"\
 "#make objs\n"\
 "obj/main.o: src/main.c\n"\
-"	gcc -o obj/main.o src/main.c -I include -I ../nodeSystem -c -D NODE_IN_$1 -D NODE_OUT_$2 -D INPUT_COUNT=$3 \n"\
+"	gcc -o obj/main.o src/main.c -I include -I ../nodeSystem -c -D NODE_IN_$1 -D NODE_OUT_$2  \n"\
 "\n"\
 "obj/nodeSystem.o: ../nodeSystem/nodeSystem.c\n"\
 "	gcc -o obj/nodeSystem.o ../nodeSystem/nodeSystem.c -I include -I ../nodeSystem -c\n"\
 "\n"\
 "out: obj/main.o obj/nodeSystem.o\n"\
-"	gcc -o div-input-${1}_output-${2} obj/main.o obj/nodeSystem.o\n"\
+"	gcc -o div_input-${1}_output-${2} obj/main.o obj/nodeSystem.o\n"\
 "\n"\
 "all: clean out\n"\
 "\n"\
 "clean:\n"\
-"	\$(RM) div-input-${1}_output-${2} obj/main.o obj/nodeSystem.o\n" > Makefile
+"	\$(RM) div_input-${1}_output-${2} obj/main.o obj/nodeSystem.o\n" > Makefile
