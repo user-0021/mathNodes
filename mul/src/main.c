@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 #ifdef NODE_IN_INT8
 	#define NODE_IN_UNIT NODE_UNIT_INT8
 	typedef int8_t node_in_unit;
@@ -86,15 +87,15 @@ int main(){
 
 	node_in_unit rdata;
     node_out_unit wdata;
-	
+
 	nodeSystemWait();
 	while(!nodeSystemLoop()){
 		//read input
 		int ret = 0;
-		wdata = 0;
-		for(i = 0;i < INPUT_COUNT;i++){
-			ret |= nodeSystemRead(inputPipes[i],&rdata);
-			wdata += rdata;		
+		ret |= nodeSystemRead(inputPipes[i],&wdata);
+		for(i = 1;i < INPUT_COUNT;i++){
+			ret |= nodeSystemRead(inputPipes[i],&rdata);			
+			wdata *= rdata;		
 		}
 		
 		//write add result

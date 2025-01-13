@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 #ifdef NODE_IN_INT8
 	#define NODE_IN_UNIT NODE_UNIT_INT8
 	typedef int8_t node_in_unit;
@@ -71,6 +72,7 @@
 int main(){
 	//add pipe
 	int out  = nodeSystemAddPipe("OUT" ,NODE_PIPE_OUT  ,NODE_OUT_UNIT,1,NULL);
+	int base  = nodeSystemAddPipe("Base" ,NODE_PIPE_IN  ,NODE_OUT_UNIT,1,NULL);
 	int* inputPipes = malloc(INPUT_COUNT*sizeof(int));
 	int i;
 	for(i = 0;i < INPUT_COUNT;i++){
@@ -86,19 +88,20 @@ int main(){
 
 	node_in_unit rdata;
     node_out_unit wdata;
-	
+    node_out_unit tmp;
+
 	nodeSystemWait();
 	while(!nodeSystemLoop()){
 		//read input
-		int ret = 0;
-		wdata = 0;
+		int ret =  nodeSystemRead(base,&wdata);
+		tmp = wdata;
 		for(i = 0;i < INPUT_COUNT;i++){
-			ret |= nodeSystemRead(inputPipes[i],&rdata);
-			wdata += rdata;		
+			if((ret |= nodeSystemRead(inputPipes[i],&rdata)) >= 0)	
+				wdata -= rdata;		
 		}
 		
-		//write add result
-		if(ret > 0){
+		//write sub result
+		if(ret >= 0){
 		    nodeSystemWrite(out,&wdata);
 		}
 
