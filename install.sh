@@ -5,6 +5,9 @@ chmod 0777 sub/generate_makefile.sh
 chmod 0777 mul/generate_makefile.sh
 chmod 0777 div/generate_makefile.sh
 chmod 0777 display/generate_makefile.sh
+chmod 0777 const/generate_makefile.sh
+chmod 0777 counter/generate_makefile.sh
+chmod 0777 integral/generate_makefile.sh
 
 #unit array
 unitArry=("INT8" "INT16" "INT32" "INT64" "UINT8" "UINT16" "UINT32" "UINT64" "FLOAT" "DOUBLE")
