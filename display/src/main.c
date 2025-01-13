@@ -3,53 +3,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-
-const uint32_t default_freq = 100;
 
 #ifdef NODE_IN_INT8
-	#define NODE_IN_UNIT NODE_INT_8
+	#define NODE_IN_UNIT NODE_UNIT_INT8
 	typedef int8_t node_in_unit;
 #elif  NODE_IN_INT16
-	#define NODE_IN_UNIT NODE_INT_16
+	#define NODE_IN_UNIT NODE_UNIT_INT16
 	typedef int16_t node_in_unit;
 #elif  NODE_IN_INT32
-	#define NODE_IN_UNIT NODE_INT_32
+	#define NODE_IN_UNIT NODE_UNIT_INT32
 	typedef int32_t node_in_unit;
 #elif  NODE_IN_INT64
-	#define NODE_IN_UNIT NODE_INT_64
+	#define NODE_IN_UNIT NODE_UNIT_INT64
 	typedef int64_t node_in_unit;
 #elif NODE_IN_UINT8
-	#define NODE_IN_UNIT NODE_UINT_8
+	#define NODE_IN_UNIT NODE_UNIT_UINT8
 	typedef uint8_t node_in_unit;
 #elif  NODE_IN_UINT16
-	#define uNODE_IN_UNIT NODE_UINT_16
+	#define NODE_IN_UNIT NODE_UNIT_UINT16
 	typedef uint16_t node_in_unit;
 #elif  NODE_IN_UINT32
-	#define NODE_IN_UNIT NODE_UINT_32
+	#define NODE_IN_UNIT NODE_UNIT_UINT32
 	typedef uint32_t node_in_unit;
 #elif  NODE_IN_UINT64
-	#define NODE_IN_UNIT NODE_UINT_64
+	#define NODE_IN_UNIT NODE_UNIT_UINT64
 	typedef uint64_t node_in_unit;
 #elif  NODE_IN_FLOAT
-	#define NODE_IN_UNIT NODE_FLOAT
+	#define NODE_IN_UNIT NODE_UNIT_FLOAT
 	typedef float node_in_unit;
 #elif  NODE_IN_DOUBLE
-	#define NODE_IN_UNIT NODE_DOUBLE
+	#define NODE_IN_UNIT NODE_UNIT_DOUBLE
 	typedef double node_in_unit;
 #endif
 
 
 int main(){
 	//add pipe
-	int freq = nodeSystemAddPipe("Freq",NODE_CONST,NODE_UINT_32,1,&default_freq);
-	int xAxsis = nodeSystemAddPipe("xAxsis",NODE_IN,NODE_IN_UNIT,1,NULL);
+	int xAxsis = nodeSystemAddPipe("xAxsis",NODE_PIPE_IN,NODE_IN_UNIT,1,NULL);
 	int* inputPipes = malloc(INPUT_COUNT*sizeof(int));
 	int i;
 	for(i = 0;i < INPUT_COUNT;i++){
 		char numString[100];
 		sprintf(numString,"yAxsis-%d",i+1);
-		inputPipes[i] = nodeSystemAddPipe(numString,NODE_IN,NODE_IN_UNIT,1,NULL);
+		inputPipes[i] = nodeSystemAddPipe(numString,NODE_PIPE_IN,NODE_IN_UNIT,1,NULL);
 	}
 
 	//system wake up
@@ -58,10 +54,6 @@ int main(){
 	nodeSystemBegine();
 
 	node_in_unit rdata;
-
-	//timer
-	uint32_t hz;
-	struct timespec req = {};
 
 	char line[4096];
 	strcpy(line,"xAxsis");
@@ -72,15 +64,17 @@ int main(){
 	}
 	nodeSystemDebugLog(line);
 
+
+	nodeSystemWait();
 	while(!nodeSystemLoop()){
 
 		//read xAxsis
-		if(nodeSystemRead(xAxsis,&rdata,0) == 1){
+		if(nodeSystemRead(xAxsis,&rdata) == 1){
 			//if xAxsis updated
 			sprintf(line,"%lf",(double)rdata);
 			for(i = 0;i < INPUT_COUNT;i++){
 				char numString[100];
-				if(nodeSystemRead(xAxsis,&rdata,0) < 0){
+				if(nodeSystemRead(inputPipes[i],&rdata) < 0){
 					rdata = 0;
 				}
 				sprintf(numString,",%lf",(double)rdata);
@@ -89,17 +83,6 @@ int main(){
 			nodeSystemDebugLog(line);
 		}
 
-		//update freq
-		int ret = nodeSystemRead(freq,&hz,0);
-		if(ret == 1){
-			if(hz == 0)
-				hz = default_freq;
-
-			req.tv_nsec = 1000 * 1000 * 1000 / hz;
-			req.tv_sec = req.tv_nsec/(1000*1000*1000);
-			req.tv_nsec = req.tv_nsec % (1000*1000*1000);
-		}
-
-		nanosleep(&req,NULL);
+		nodeSystemWait();
 	}
 }

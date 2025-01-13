@@ -18,7 +18,7 @@ cd add
 for u in ${unitArry[@]}; do
 	for i in ${numArry[@]}; do
 		./generate_makefile.sh $u $u $i
-		make
+		make all
 	done
 done
 
@@ -31,7 +31,7 @@ cd sub
 for u in ${unitArry[@]}; do
 	for i in ${numArry[@]}; do
 		./generate_makefile.sh $u $u $i
-		make
+		make all
 	done
 done
 
@@ -44,7 +44,7 @@ cd mul
 for u in ${unitArry[@]}; do
 	for i in ${numArry[@]}; do
 		./generate_makefile.sh $u $u $i
-		make
+		make all
 	done
 done
 
@@ -56,7 +56,40 @@ cd div
 
 for u in ${unitArry[@]}; do
 	./generate_makefile.sh $u $u
-	make
+	make all
+done
+
+cd ../
+
+##generate integral nodes
+
+cd integral
+
+for u in ${unitArry[@]}; do
+	./generate_makefile.sh $u $u
+	make all
+done
+
+cd ../
+
+##generate const nodes
+
+cd const
+
+for u in ${unitArry[@]}; do
+	./generate_makefile.sh $u
+	make all
+done
+
+cd ../
+
+##generate counter nodes
+
+cd counter
+
+for u in ${unitArry[@]}; do
+	./generate_makefile.sh $u
+	make all
 done
 
 cd ../
@@ -68,7 +101,7 @@ cd display
 for u in ${unitArry[@]}; do
 	for i in ${numArry[@]}; do
 		./generate_makefile.sh $u $i
-		make
+		make all
 	done
 done
 
