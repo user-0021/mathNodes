@@ -54,9 +54,9 @@ echo -e \
 "	gcc -o obj/nodeSystem.o ../nodeSystem/nodeSystem.c -I include -I ../nodeSystem -c\n"\
 "\n"\
 "out: obj/main.o obj/nodeSystem.o\n"\
-"	gcc -o counter_${1} obj/main.o obj/nodeSystem.o\n"\
+"	gcc -o counter_${1}.node obj/main.o obj/nodeSystem.o\n"\
 "\n"\
 "all: clean out\n"\
 "\n"\
 "clean:\n"\
-"	\$(RM) counter_${1} obj/main.o obj/nodeSystem.o\n" > Makefile
+"	\$(RM) counter_${1}.node obj/main.o obj/nodeSystem.o\n" > Makefile
