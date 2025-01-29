@@ -69,19 +69,21 @@ int main(){
 	while(!nodeSystemLoop()){
 
 		//read xAxsis
-		if(nodeSystemRead(xAxsis,&rdata) == 1){
-			//if xAxsis updated
-			sprintf(line,"%lf",(double)rdata);
-			for(i = 0;i < INPUT_COUNT;i++){
-				char numString[100];
-				if(nodeSystemRead(inputPipes[i],&rdata) < 0){
-					rdata = 0;
-				}
-				sprintf(numString,",%lf",(double)rdata);
-				strcat(line,numString);
-			}
-			nodeSystemDebugLog(line);
+		if(nodeSystemRead(xAxsis,&rdata) < 0){
+			rdata = 0;
 		}
+		sprintf(line,"%lf",(double)rdata);
+
+		//read yAxsis
+		for(i = 0;i < INPUT_COUNT;i++){
+			char numString[100];
+			if(nodeSystemRead(inputPipes[i],&rdata) < 0){
+				rdata = 0;
+			}
+			sprintf(numString,",%lf",(double)rdata);
+			strcat(line,numString);
+		}
+		nodeSystemDebugLog(line);
 
 		nodeSystemWait();
 	}
